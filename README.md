@@ -1,2 +1,2 @@
 # process-dicoms
-To parse the DICOM images and contours
+See [writeup](https://github.com/hasnainmamdani/process-dicoms/blob/master/writeup.pdf)
