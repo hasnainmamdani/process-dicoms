@@ -6,6 +6,8 @@ from pydicom.errors import InvalidDicomError
 import numpy as np
 from PIL import Image, ImageDraw
 
+import logging
+logger = logging.getLogger(__name__)
 
 def parse_contour_file(filename):
     """Parse the given contour filename
@@ -28,10 +30,10 @@ def parse_contour_file(filename):
 
 
 def parse_dicom_file(filename):
-    """Parse the given DICOM filename
+    """Parse the given DICOM filename. Also converts CT data to Hounsfield units if rescale intercept and slope are available.
 
     :param filename: filepath to the DICOM file to parse
-    :return: dictionary with DICOM image data
+    :return: list with DICOM image pixels
     """
 
     try:
@@ -49,9 +51,9 @@ def parse_dicom_file(filename):
 
         if intercept != 0.0 and slope != 0.0:
             dcm_image = dcm_image*slope + intercept
-        dcm_dict = {'pixel_data' : dcm_image}
-        return dcm_dict
+        return dcm_image
     except InvalidDicomError:
+        logger.exception("Unable to read image data from %s", filename)
         return None
 
 
@@ -70,3 +72,6 @@ def poly_to_mask(polygon, width, height):
     ImageDraw.Draw(img).polygon(xy=polygon, outline=0, fill=1)
     mask = np.array(img).astype(bool)
     return mask
+
+
+
