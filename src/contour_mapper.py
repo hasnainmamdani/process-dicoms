@@ -31,11 +31,20 @@ def map_dicom_contour(dicom_path, dicom_id, contour_path, contour_id):
         base = os.path.basename(dicom_file)
         name = os.path.splitext(base)[0]
 
-        #TODO maybe fine for now but need a better heuristic to the map dicom filename with corresponding contour file
-        contour_file = patient_contours_dir + "/i-contours/IM-0001-" + name.zfill(4) + "-icontour-manual.txt"
+        # TODO maybe fine for now but need a better heuristic to the map dicom filename with corresponding contour file
+        i_contour_file = patient_contours_dir + "/i-contours/IM-0001-" + name.zfill(4) + "-icontour-manual.txt"
+        o_contour_file = patient_contours_dir + "/o-contours/IM-0001-" + name.zfill(4) + "-ocontour-manual.txt"
 
-        if os.path.exists(contour_file):
-            patient_dict[dicom_file] = contour_file
+        if not os.path.exists(i_contour_file) or not os.path.exists(o_contour_file):
+            logger.debug("skipping contours for %s", dicom_file)
+            # Not clear if this is the requirement. These are not needed at the moment, so let's skip.
+            continue
+
+        contour_file_dict = {}
+        contour_file_dict['i-contour'] = i_contour_file
+        contour_file_dict['o-contour'] = o_contour_file
+
+        patient_dict[dicom_file] = contour_file_dict
 
     return patient_dict
 

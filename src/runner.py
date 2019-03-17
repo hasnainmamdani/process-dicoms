@@ -3,15 +3,17 @@ import logging
 
 from src.data_loader import ImageDataLoader
 from src.model_trainer import generate_batches_for_training
+from src.visualization_utils import visualize_images
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s %(threadName)s %(levelname)s %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(threadName)s %(levelname)s %(message)s')
 
 
 def main(args):
 
-    dicoms, targets = ImageDataLoader(args.links_filename, args.dicom_path, args.contour_path).load_data()
-    dataset = generate_batches_for_training(args.epochs, args.batch_size, args.buffer_size, dicoms, targets)
+    dicoms, icontours, ocontours = ImageDataLoader(args.links_filename, args.dicom_path, args.contour_path).load_data()
+    #dataset = generate_batches_for_training(args.epochs, args.batch_size, args.buffer_size, dicoms, targets)
+    visualize_images(dicoms, icontours, ocontours)
 
 
 if __name__ == "__main__":
